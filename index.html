@@ -23,7 +23,7 @@ p{margin:0;color:var(--muted)}
 h2{font-size:19px;margin:0;letter-spacing:-.02em}
 .instruction{font-size:14px;margin:0 0 16px}
 .stage{position:relative;background:#f8fafb;border:1px dashed #b8c2ce;border-radius:16px;min-height:240px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:18px;margin-bottom:16px}
-.card-outline{width:var(--card-width,300px);aspect-ratio:85.60/53.98;border:2px solid var(--accent);border-radius:10px;background:linear-gradient(135deg,#e7f4ef,#f9fcfb);position:relative;display:flex;align-items:center;justify-content:center;max-width:100%;box-shadow:0 5px 18px #176b5812}
+.card-outline{width:min(var(--card-width,300px),100%);aspect-ratio:53.98/85.60;border:2px solid var(--accent);border-radius:10px;background:linear-gradient(135deg,#e7f4ef,#f9fcfb);position:relative;display:flex;align-items:center;justify-content:center;max-width:100%;box-shadow:0 5px 18px #176b5812}
 .card-outline:before{content:"";position:absolute;left:9%;top:14%;width:18%;height:25%;border-radius:5px;background:#d1e5dd;border:1px solid #a7cbbd}
 .card-outline:after{content:"BANKA KARTI";position:absolute;right:8%;bottom:12%;font-size:10px;letter-spacing:.12em;color:#497666;font-weight:800}
 .measure-circle{width:var(--circle-size,100px);height:var(--circle-size,100px);border:3px solid #c07b28;border-radius:50%;background:#fff8ecaa;box-shadow:0 0 0 1px #fff;position:relative;flex:none}
@@ -60,11 +60,11 @@ footer{font-size:12px;color:var(--muted);padding:8px 4px 0}
 
 <section class="card" id="step1">
   <div class="step-title"><div class="step-number">1</div><h2>Banka kartını kalibre et</h2></div>
-  <p class="instruction">Standart banka kartını ekrana yatay yerleştir. Aşağıdaki çerçevenin boyutunu, kartın kenarlarıyla tam hizalanana kadar ayarla.</p>
+  <p class="instruction">Standart banka kartını ekrana dikey (kısa kenarı üstte) yerleştir. Aşağıdaki çerçevenin boyutunu, kartın kenarlarıyla tam hizalanana kadar ayarla.</p>
   <div class="stage" id="cardStage"><div class="card-outline" id="cardOutline"><span style="font-size:12px;color:#497666;font-weight:800">Kart çerçevesi</span></div></div>
   <div class="range-label"><label for="cardRange">Çerçeve genişliği</label><span class="output" id="cardPx">280 px</span></div>
   <input id="cardRange" type="range" min="180" max="420" value="280" step="1">
-  <p class="small">İpucu: Telefonun ekran parlaklığını artır ve tarayıcı yakınlaştırmasını %100 yap. Kartı ekranın üzerine koyarken zorlamamaya dikkat et.</p>
+  <p class="small">Kart dikey yerleşir; böylece telefon ekranına daha rahat sığar. İpucu: Telefonun ekran parlaklığını artır ve tarayıcı yakınlaştırmasını %100 yap. Kartı ekranın üzerine koyarken zorlamamaya dikkat et.</p>
   <div class="actions"><button class="primary" id="toStep2">Kartı hizaladım →</button></div>
 </section>
 
@@ -103,7 +103,8 @@ footer{font-size:12px;color:var(--muted);padding:8px 4px 0}
     cardWidth=Number($('cardRange').value);
     $('cardPx').textContent=cardWidth+' px';
     $('cardOutline').style.setProperty('--card-width',cardWidth+'px');
-    pxPerMm=cardWidth/85.6;
+    // Width is calibrated against the standard 85.60 mm card width.
+    pxPerMm=cardWidth/53.98;
   }
   function updateRing(){
     const d=Number($('ringRange').value);
@@ -118,6 +119,7 @@ footer{font-size:12px;color:var(--muted);padding:8px 4px 0}
     if(n===2) updateRing();
     if(n===3){
       const d=Number($('ringRange').value), c=Math.PI*d;
+      // Common Turkish sizing convention is approximately circumference (mm) - 40.
       const size=Math.round(c-40);
       $('trSize').textContent=size;
       $('diameterResult').textContent=fmt(d)+' mm';
